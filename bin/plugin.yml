@@ -1,0 +1,9 @@
+name: WeatherNews
+main: com.namarius.weathernews.WeatherNews
+version: 1.0
+author: Namarius
+database: false
+commands:
+  wnews:
+    description: Gets you the weather news
+    usage: /<command>
