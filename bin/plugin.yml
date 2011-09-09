@@ -5,5 +5,5 @@ author: Namarius
 database: false
 commands:
   wnews:
-    description: Gets you the weather news
+    description: Show the weather news
     usage: /<command>

@@ -43,45 +43,40 @@ public class NewsRunner implements Runnable {
 		int state = (oldstorm?1:0) + (oldthunder?2:0) + (storm?4:0) + (thunder?8:0);
 		String from = null;
 		String to = null;
+		String next = null;
 		switch(state)
 		{
 			case 0:from=from==null?"sun":from;//sun>sun
 			case 1:from=from==null?"rain":from;//rain>sun
 			case 2:from=from==null?"sun":from;//sun(thunderstorm)>sun
 			case 3:from=from==null?"thunderstorm":from;//thunderstorm>sun
-				to="sun";break;
+				to="sun";
+				next=world.getWeatherDuration()<world.getThunderDuration()?"rain":"sun";					
+				break;
 				
 			case 4:from=from==null?"sun":from;//sun>sun
 			case 5:from=from==null?"rain":from;//rain>sun
 			case 6:from=from==null?"sun":from;//sun(thunderstorm)>sun
 			case 7:from=from==null?"thunderstorm":from;//thunderstorm>sun
-				to="rain";break;
+				to="rain";
+				next=world.getWeatherDuration()<world.getThunderDuration()?"sun":"thunderstorm";	
+				break;
 				
 			case 8:from=from==null?"sun":from;//sun>sun
 			case 9:from=from==null?"rain":from;//rain>sun
 			case 10:from=from==null?"sun":from;//sun(thunderstorm)>sun
 			case 11:from=from==null?"thunderstorm":from;//thunderstorm>sun
-				to="sun";break;
+				to="sun";
+				next=world.getWeatherDuration()<world.getThunderDuration()?"thunderstorm":"sun";	
+				break;
 				
 			case 12:from=from==null?"sun":from;//sun>sun
 			case 13:from=from==null?"rain":from;//rain>sun
 			case 14:from=from==null?"sun":from;//sun(thunderstorm)>sun
 			case 15:from=from==null?"thunderstorm":from;//thunderstorm>sun
-				to="thunderstorm";break;
-		}
-		String next = null;
-		state=(storm?1:0)+(thunder?2:0)+(world.getWeatherDuration()<world.getThunderDuration()?4:0);
-		switch(state)
-		{
-		case 0:next = "rain";break;
-		case 1:next = "sun";break;
-		case 2:next = "thunderstorm";break;
-		case 3:next = "sun";break;
-		
-		case 4:next = "sun";break;
-		case 5:next = "thunderstorm";break;
-		case 6:next = "sun";break;
-		case 7:next = "rain";break;
+				to="thunderstorm";
+				next=world.getWeatherDuration()<world.getThunderDuration()?"sun":"rain";	
+				break;
 		}
 		MinecraftTime time = new MinecraftTime(world.getFullTime()+6000);//I want midnight
 		
@@ -95,15 +90,8 @@ public class NewsRunner implements Runnable {
 			data.add(to);
 			data.add("for the next");
 			data.add(new MinecraftTime(world.getWeatherDuration()).nicePrint());
-			if(to != next)
-			{
-				data.add("and then we get");
-				data.add(next);
-			}
-			else
-			{
-				data.add("at least");
-			}
+			data.add("and then we get");
+			data.add(next);
 		}
 		else
 		{
@@ -111,15 +99,8 @@ public class NewsRunner implements Runnable {
 			data.add(to);
 			data.add("for the next");
 			data.add(new MinecraftTime(Math.min(world.getWeatherDuration(),world.getThunderDuration())).nicePrint());
-			if(to != next)
-			{
-				data.add("and then we get");
-				data.add(next);
-			}
-			else
-			{
-				data.add("at least");
-			}
+			data.add("and then we get");
+			data.add(next);
 		}
 		for(Player p : players)
 		{
