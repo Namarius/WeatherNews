@@ -84,24 +84,12 @@ public class NewsRunner implements Runnable {
 		data.add("Today the day:");
 		data.add(time.getDay());
 		data.add(Symbol.Newline);
-		if(from == to)
-		{
-			data.add("We have");
-			data.add(to);
-			data.add("for the next");
-			data.add(new MinecraftTime(world.getWeatherDuration()).nicePrint());
-			data.add("and then we get");
-			data.add(next);
-		}
-		else
-		{
-			data.add("We have");
-			data.add(to);
-			data.add("for the next");
-			data.add(new MinecraftTime(Math.min(world.getWeatherDuration(),world.getThunderDuration())).nicePrint());
-			data.add("and then we get");
-			data.add(next);
-		}
+		data.add("We have");
+		data.add(to);
+		data.add("for the next");
+		data.add(new MinecraftTime(Math.min(world.getWeatherDuration(),world.getThunderDuration())).nicePrint());
+		data.add("and then we get");
+		data.add(next);
 		for(Player p : players)
 		{
 			ChatUtil.send(data.toArray(), p, ChatColor.GOLD);
