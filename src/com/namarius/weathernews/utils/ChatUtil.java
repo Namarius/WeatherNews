@@ -1,12 +1,10 @@
 package com.namarius.weathernews.utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.ListIterator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 /*
 import com.namarius.complexredstone.ComplexRedstone;
 import com.namarius.complexredstone.message.AbstractMessage;
@@ -19,29 +17,6 @@ public final class ChatUtil {
 	private static final ChatColor errorcolor = ChatColor.RED;
 	private static final ChatColor note = ChatColor.GREEN;
 	private static final int maxlinelength = 59;
-	private static final HashMap<Player, String[]> output = new HashMap<Player, String[]>();
-
-	public static String[] getLines(Player player) {
-		return output.get(player);
-	}
-
-	@Deprecated
-	public static void send(CommandSender sender, String color, String message) {
-		while (message.length() > 0) {
-			message = message.trim();
-			int lastspace = message.substring(
-					0,
-					(maxlinelength > message.length() ? message.length()
-							: maxlinelength)).lastIndexOf(' ');
-			if (lastspace < 0)
-				lastspace = (maxlinelength > message.length() ? message
-						.length() : maxlinelength);
-			if (message.length() < maxlinelength)
-				lastspace = message.length();
-			sender.sendMessage(color + message.substring(0, lastspace));
-			message = message.substring(lastspace);
-		}
-	}
 
 	public static void rawsendout(CommandSender sender, String message) {
 		if (message.length() > 2 && message.charAt(2) == ' ') {
@@ -143,7 +118,6 @@ public final class ChatUtil {
 		String current = "";
 		for(Object o : splitted)
 		{
-			//System.out.println(o);
 			if(o == Symbol.Newline || o==Symbol.End)
 			{
 				strings.add(current);
@@ -154,7 +128,6 @@ public final class ChatUtil {
 		}
 		String[] out = new String[strings.size()];
 		out = strings.toArray(out);
-		ChatUtil.output.put((Player) sender, out);
 		rawsendout(sender, out);
 	}
 
@@ -166,11 +139,6 @@ public final class ChatUtil {
 		Object[] tempmessage = { message };
 		send(tempmessage, sender, errorcolor);
 	}
-
-/*	public static void error(CommandSender sender, AbstractMessage message) {
-		error(sender, message.toString());
-
-	}*/
 
 	public static void tooMany(int number, CommandSender sender) {
 		Object[] message = { "Too many parameters:" + number };
