@@ -49,7 +49,7 @@ public class MinecraftTime {
 		else if(this.hour!=1)
 			hour+="s";
 		
-		if(this.hour!=0)
+		if(this.hour!=0||(this.hour==0&&this.day!=0&&this.minutes!=0))
 			hour+=" and ";
 		
 		if(this.hour!=0 && this.day!=0)
