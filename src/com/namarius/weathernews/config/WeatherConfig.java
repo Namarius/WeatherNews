@@ -1,26 +1,22 @@
 package com.namarius.weathernews.config;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.config.Configuration;
-import org.bukkit.util.config.ConfigurationException;
 import org.bukkit.util.config.ConfigurationNode;
-
-import com.namarius.weathernews.utils.ChatUtil;
-import com.namarius.weathernews.utils.ChatUtil.Symbol;
 
 public class WeatherConfig {
 
-	private HashMap<String,Object> vars;
-	private HashMap<String,Object> defvars;
+	private HashMap<String,String> vars;
+	private HashMap<String,String> defvars;
 	
 	public WeatherConfig(Plugin plugin) throws Exception
 	{
@@ -47,7 +43,7 @@ public class WeatherConfig {
 		readupVariables(config.getNode(""));
 	}
 	
-	private void setVariable(String key,String value)
+	public void setVariable(String key,String value)
 	{
 		if(key!=null)
 			vars.put(key, value);
@@ -78,20 +74,39 @@ public class WeatherConfig {
 	@SuppressWarnings("unchecked")
 	public void setDefault()
 	{
-		defvars=(HashMap<String, Object>) vars.clone();
+		defvars=(HashMap<String, String>) vars.clone();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public void resetToDefault()
 	{
-		vars=(HashMap<String, Object>) defvars.clone();
+		vars=(HashMap<String, String>) defvars.clone();
+	}
+	
+	private String getRecusiveParsedString(String key,int layersleft)
+	{
+		if(key==null)
+			return "";
+		if(layersleft<=0)
+			return "";
+		String var = vars.get(key);
+		Pattern p = Pattern.compile("\\$\\{(\\w*)\\}");
+		Matcher m = p.matcher(var);
+		LinkedList<String> foundvars = new LinkedList<String>();
+		while(m.find())
+		{		
+			if(m.groupCount()==2)
+				foundvars.add(m.group(1));
+		}
+		for(String s : foundvars)
+		{
+			var=var.replace("${"+s+"}", getRecusiveParsedString(s, layersleft-1));
+		}
+		return "";
 	}
 	
 	public String getParsedString(String key)
-	{
-		
-		
-		
-		return "";
+	{		
+		return getRecusiveParsedString(key, 16);
 	}
 }
