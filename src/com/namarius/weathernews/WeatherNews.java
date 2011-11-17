@@ -11,10 +11,13 @@ import org.bukkit.event.Event.Type;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.namarius.weathernews.config.WeatherConfig;
+
 public class WeatherNews extends JavaPlugin {
 	
 	private final PlayerListener pl = new PlayerListener(this);
 	private final WeatherListener wl = new WeatherListener(this);
+	private final WeatherConfig wc = new WeatherConfig(this);
 
 	@Override
 	public void onDisable() {
@@ -39,6 +42,11 @@ public class WeatherNews extends JavaPlugin {
 		World w = player.getWorld();
 		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new NewsRunner(w, player), 1);
 		return true;
+	}
+	
+	public WeatherConfig getWeatherConfig()
+	{
+		return wc;
 	}
 
 }

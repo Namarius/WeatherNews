@@ -1,25 +1,25 @@
 package com.namarius.weathernews.config;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.config.Configuration;
-import org.bukkit.util.config.ConfigurationNode;
 
 public class WeatherConfig {
 
 	private HashMap<String,String> vars;
-	private HashMap<String,String> defvars;
+	private YamlConfiguration iconfig;
 	
-	public WeatherConfig(Plugin plugin) throws Exception
+	public WeatherConfig(Plugin plugin)
 	{
+		try
+		{
 		File basedir = plugin.getDataFolder();
 		if(!basedir.exists())
 			if(!basedir.mkdir())
@@ -27,20 +27,16 @@ public class WeatherConfig {
 		File configfile = new File(basedir, "config.yml");
 		if(!configfile.exists())
 		{
-			InputStream is = WeatherConfig.class.getResourceAsStream("config.yml");
-			FileOutputStream fos = new FileOutputStream(configfile);
-			byte[] b = new byte[4096];
-			int read=0;
-			while((read=is.read(b))>0)
-			{
-				fos.write(b, 0, read);
-			}
-			is.close();
-			fos.close();
+			iconfig = YamlConfiguration.loadConfiguration(configfile);
+			iconfig.setDefaults(YamlConfiguration.loadConfiguration(WeatherConfig.class.getResourceAsStream("config.yml")));
+			iconfig.save(configfile);
 		}
-		Configuration config = new Configuration(configfile);
-		config.load();
-		readupVariables(config.getNode(""));
+		iconfig = iconfig==null ? YamlConfiguration.loadConfiguration(configfile) : iconfig;
+		readupVariables(iconfig);
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 	
 	public void setVariable(String key,String value)
@@ -49,16 +45,14 @@ public class WeatherConfig {
 			vars.put(key, value);
 	}
 	
-	private void readupVariables(ConfigurationNode node)
+	private void readupVariables(Configuration node)
 	{
 		try
 		{
-			for(Map.Entry<String, Object> entry : node.getNode("variables").getAll().entrySet())
+			for(Map.Entry<String, Object> entry : node.getConfigurationSection("variables").getValues(false).entrySet())
 			{
 				if(entry.getValue() != null)
-				{
 					vars.put(entry.getKey(), entry.getValue().toString());
-				}
 			}
 			setVariable("rain", node.getString("rain"));
 			setVariable("sun", node.getString("sun"));
@@ -69,18 +63,6 @@ public class WeatherConfig {
 		catch (Exception e) {
 			// TODO: handle exception
 		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void setDefault()
-	{
-		defvars=(HashMap<String, String>) vars.clone();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void resetToDefault()
-	{
-		vars=(HashMap<String, String>) defvars.clone();
 	}
 	
 	private String getRecusiveParsedString(String key,int layersleft)
@@ -102,7 +84,7 @@ public class WeatherConfig {
 		{
 			var=var.replace("${"+s+"}", getRecusiveParsedString(s, layersleft-1));
 		}
-		return "";
+		return var;
 	}
 	
 	public String getParsedString(String key)
