@@ -1,5 +1,7 @@
 package com.namarius.weathernews.utils;
 
+import com.namarius.weathernews.ye.YamlExecVM;
+
 public class MinecraftTime {
 
 	private final long time;
@@ -7,7 +9,7 @@ public class MinecraftTime {
 	private long main;
 	private long day;
 	private int hour;
-	private int minutes;
+	private int minute;
 	
 	public MinecraftTime(long time)
 	{
@@ -21,7 +23,7 @@ public class MinecraftTime {
 		main = time/1000;
 		day =main/24;
 		hour = (int) (main%24);
-		minutes = (faction*6)/100;
+		minute = (faction*6)/100;
 	}
 	
 	@Override
@@ -34,37 +36,42 @@ public class MinecraftTime {
 		return new Long(day).toString();
 	}
 	
-	public String nicePrint()
+	public String getHour()
 	{
-		String day = this.day+" day";
-		String hour = this.hour+" hour";
-		String minute = this.minutes+" minute";
-		if(this.day==0)
-			day="";
-		else if(this.day!=1)
-			day+="s";
-		
-		if(this.hour==0)
-			hour="";
-		else if(this.hour!=1)
-			hour+="s";
-		
-		if(this.hour!=0||(this.hour==0&&this.day!=0&&this.minutes!=0))
-			hour+=" and ";
-		
-		if(this.hour!=0 && this.day!=0)
-			day+= ", ";
-			
-		if(this.minutes!=1)
-			minute+="s";
-		
-		
-		return day+hour+minute; 
+		return new Long(hour).toString();
 	}
 	
-	@Override
-	public String toString() {
-		return day+":"+hour+":"+minutes;
+	public String getMinute()
+	{
+		return new Long(minute).toString();
 	}
 	
+	public String nicePrint(YamlExecVM vm)
+	{
+		String sminute,shour,sday,sand;
+		sminute=new Long(minute).toString()+" "+vm.getParsedString(minute>1?"minute_plural":"minute");;
+		shour=new Long(hour).toString()+" "+vm.getParsedString(hour>1?"hour_plural":"hour");
+		sday=new Long(day).toString()+" "+vm.getParsedString(day>1?"day_plural":"day");
+		sand=vm.getParsedString("and");
+		switch(minute>0?1:0+hour>0?2:0+day>0?4:0)
+		{
+		case 1:
+			return sminute;
+		case 2:
+			return shour;
+		case 3:
+			return shour+" "+sand+" "+sminute;
+		case 4:
+			return sday;
+		case 5:
+			return sday+" "+sand+" "+sminute;
+		case 6:
+			return sday+" "+sand+" "+shour;
+		case 7:
+			return sday+", "+shour+" "+sand+" "+sminute;
+		default:
+			return "";
+		}
+	}
+		
 }

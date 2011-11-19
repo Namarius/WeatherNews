@@ -3,23 +3,23 @@ package com.namarius.weathernews;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
 import com.namarius.weathernews.utils.ChatUtil;
 import com.namarius.weathernews.utils.MinecraftTime;
-import com.namarius.weathernews.utils.ChatUtil.Symbol;
+import com.namarius.weathernews.ye.YamlExecVM;
 
 public class NewsRunner implements Runnable {
 	
 	private final World world;
 	private List<Player> players = null;
+	private YamlExecVM vm;
 	
-	public NewsRunner( World world )
+	public NewsRunner( World world , YamlExecVM vm)
 	{
 		this.world = world;
+		this.vm = vm;
 	}
 	
 	public NewsRunner(World world, Player player)
@@ -31,15 +31,13 @@ public class NewsRunner implements Runnable {
 
 	@Override
 	public void run() {
-		if(world.getEnvironment()==Environment.NETHER)
-			return;
 		players = players!=null?players:world.getPlayers();
-		ArrayList<Object> data = new ArrayList<Object>();
+		this.vm.parseConfig();
 		boolean storm = world.hasStorm();
 		boolean thunder = world.isThundering();
-		int weaterduration = world.getWeatherDuration();
+		int weatherduration = world.getWeatherDuration();
 		int thunderduration = world.getThunderDuration();
-		int state = (storm?1:0) + (thunder?2:0) + (weaterduration<=thunderduration?4:0);
+		int state = (storm?1:0) + (thunder?2:0) + (weatherduration<=thunderduration?4:0);
 		String now = null;
 		String next = null;
 		switch(state)
@@ -77,13 +75,33 @@ public class NewsRunner implements Runnable {
 			break;
 		}
 		MinecraftTime time = new MinecraftTime(world.getFullTime()+6000);//I want midnight
-		MinecraftTime wdur = new MinecraftTime(weaterduration);
+		MinecraftTime wdur = new MinecraftTime(weatherduration);
 		MinecraftTime tdur = new MinecraftTime(thunderduration);
-		
+		MinecraftTime mnext = weatherduration<thunderduration?wdur:tdur;
+		this.vm.setVariable("TIMEDAY",time.getDay());
+		this.vm.setVariable("TIMEHOUR", time.getHour());
+		this.vm.setVariable("TIMEMINUTE", time.getMinute());
+		this.vm.setVariable("NEXTDAY", mnext.getDay());
+		this.vm.setVariable("NEXTHOUR", time.getHour());
+		this.vm.setVariable("NEXTMINUTE", time.getMinute());
+		this.vm.setVariable("TIMENICE", time.nicePrint(this.vm));
+		this.vm.setVariable("NEXTNICE", mnext.nicePrint(this.vm));
+		this.vm.execute();		
+		String data;
+		if(now.equals(next))
+		{
+			//unclear
+			data = this.vm.getParsedString("unclear");
+		}
+		else
+		{
+			//clear
+			data = this.vm.getParsedString("clear");
+		}
 		
 		for(Player p : players)
 		{
-			ChatUtil.send(data.toArray(), p, ChatColor.GOLD);
+			ChatUtil.send(data, p);
 		}
 	}
 
