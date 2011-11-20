@@ -1,0 +1,23 @@
+variables:
+  DAY: "day"
+  DAY_PLURAL: "days"
+  HOUR: "hour"
+  HOUR_PLURAL: "hours"
+  MINUTE: "minute"
+  MINUTE_PLURAL: "minutes"
+  AND: "and"
+  SUN: "sun"
+  RAIN: "rain"
+  THUNDERSTORM: "thunderstorm"
+  CLEAR: "${header}${mainclear}${nextclear}"
+  UNCLEAR: "${header}${mainunclear}${nextunclear}"
+  header: | 
+    ${GOLD}[WeatherNews] Today the day ${TIMEDAY}.
+  nextunclear: |
+    After that we have something different.
+    I will notice you in ${NEXTNICE}.
+  nextclear: "After that we have ${NEXT}."
+  mainclear: |
+    We have ${NOW} for the next ${NEXTNICE}.
+  mainunclear: |
+    We have at least ${NOW} for the next ${NEXTNICE}.

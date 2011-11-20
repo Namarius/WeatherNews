@@ -31,10 +31,19 @@ public class YamlExecVM {
 		try {
 			iconfig.load(fconfig);
 		} catch (FileNotFoundException e) {
-			iconfig.set("execute", "");
-			iconfig.createSection("variables");
+			try {
+				plugin.getServer().getLogger().warning("[WeatherNews] Config not found. Create default config.");
+				iconfig.load(this.getClass().getResourceAsStream("config.yml"));
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} catch (InvalidConfigurationException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 			try {
 				iconfig.save(fconfig);
+				plugin.getServer().getLogger().info("[WeatherNews] Default config created.");
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -46,7 +55,6 @@ public class YamlExecVM {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 	
 	public void parseConfig()
@@ -84,15 +92,20 @@ public class YamlExecVM {
 	public void execute()
 	{
 		Logger log = plugin.getServer().getLogger();
-		String[] toexecute=iconfig.getString("execute").split("\n");
+		String toexecute=iconfig.getString("execute");
+		if(toexecute==null)
+			toexecute="";
+		if(toexecute=="")
+			return;
+		String[] lines=toexecute.split("\n");
 		int line = 0;
-		for(String current : toexecute)
+		for(String current : lines)
 		{
 			line++;
 			String[] params = current.split(";");
 			if(params.length!=4)
 			{
-				log.warning("Cannot parse line: "+line+" skipping it." );
+				log.warning("[WeatherNews]Cannot parse line: "+line+" skipping it." );
 				continue;
 			}
 			YamlOperator operator = YamlOperator.getByString(params[0]);
@@ -116,9 +129,11 @@ public class YamlExecVM {
 		Matcher m = p.matcher(var);
 		LinkedList<String> foundvars = new LinkedList<String>();
 		while(m.find())
-		{		
-			if(m.groupCount()==2)
+		{
+			if(m.groupCount()==1)
+			{
 				foundvars.add(m.group(1));
+			}
 		}
 		for(String s : foundvars)
 		{

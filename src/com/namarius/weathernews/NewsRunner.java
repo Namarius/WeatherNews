@@ -22,8 +22,9 @@ public class NewsRunner implements Runnable {
 		this.vm = vm;
 	}
 	
-	public NewsRunner(World world, Player player)
+	public NewsRunner(World world, Player player, YamlExecVM vm)
 	{
+		this.vm = vm;
 		this.world=world;
 		players = new ArrayList<Player>();
 		players.add(player);		
@@ -46,15 +47,15 @@ public class NewsRunner implements Runnable {
 		case 2:		//from sun > to thunder
 		case 4:		//from sun > to sun
 		case 6:		//from sun > to sun
-			now = "sun";
+			now = "SUN";
 			break;
 		case 3:		//from thunder > to sun
 		case 7:		//from thunder > to rain
-			now = "thunder";
+			now = "THUNDERSTORM";
 			break;
 		case 1:		//from rain > to sun
 		case 5:		//from rain > to thunder
-			now = "rain";
+			now = "RAIN";
 			break;
 		}
 		switch(state)
@@ -63,15 +64,15 @@ public class NewsRunner implements Runnable {
 		case 3:		//from thunder > to sun
 		case 4:		//from sun > to sun
 		case 6:		//from sun > to sun
-			next = "sun";
+			next = "SUN";
 			break;
 		case 0:		//from sun > to rain
 		case 7:		//from thunder > to rain
-			next = "rain";
+			next = "RAIN";
 			break;
 		case 2:		//from sun > to thunder
 		case 5:		//from rain > to thunder
-			next = "thunder";
+			next = "THUNDERSTORM";
 			break;
 		}
 		MinecraftTime time = new MinecraftTime(world.getFullTime()+6000);//I want midnight
@@ -86,23 +87,16 @@ public class NewsRunner implements Runnable {
 		this.vm.setVariable("NEXTMINUTE", time.getMinute());
 		this.vm.setVariable("TIMENICE", time.nicePrint(this.vm));
 		this.vm.setVariable("NEXTNICE", mnext.nicePrint(this.vm));
+		this.vm.setVariable("NOW", vm.getParsedString(now));
+		this.vm.setVariable("NEXT", vm.getParsedString(next));
 		this.vm.execute();		
 		String data;
 		if(now.equals(next))
-		{
-			//unclear
-			data = this.vm.getParsedString("unclear");
-		}
+			data = this.vm.getParsedString("UNCLEAR");
 		else
-		{
-			//clear
-			data = this.vm.getParsedString("clear");
-		}
-		
+			data = this.vm.getParsedString("CLEAR");	
 		for(Player p : players)
-		{
 			ChatUtil.send(data, p);
-		}
 	}
 
 }

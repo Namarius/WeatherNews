@@ -49,11 +49,11 @@ public class MinecraftTime {
 	public String nicePrint(YamlExecVM vm)
 	{
 		String sminute,shour,sday,sand;
-		sminute=new Long(minute).toString()+" "+vm.getParsedString(minute>1?"minute_plural":"minute");;
-		shour=new Long(hour).toString()+" "+vm.getParsedString(hour>1?"hour_plural":"hour");
-		sday=new Long(day).toString()+" "+vm.getParsedString(day>1?"day_plural":"day");
+		sminute=new Long(this.minute).toString()+" "+vm.getParsedString(this.minute>1?"MINUTE_PLURAL":"MINUTE");
+		shour=new Long(this.hour).toString()+" "+vm.getParsedString(this.hour>1?"HOUR_PLURAL":"HOUR");
+		sday=new Long(this.day).toString()+" "+vm.getParsedString(this.day>1?"DAY_PLURAL":"DAY");
 		sand=vm.getParsedString("and");
-		switch(minute>0?1:0+hour>0?2:0+day>0?4:0)
+		switch((this.minute>0?1:0)+(this.hour>0?2:0)+(this.day>0?4:0))
 		{
 		case 1:
 			return sminute;
