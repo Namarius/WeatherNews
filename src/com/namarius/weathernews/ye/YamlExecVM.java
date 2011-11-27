@@ -1,8 +1,5 @@
 package com.namarius.weathernews.ye;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -12,54 +9,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public class YamlExecVM {
 
 	private HashMap<String,String> vars,defaultvars;
-	private YamlConfiguration iconfig;
+	private FileConfiguration iconfig;
 	private final Plugin plugin;
 	
-	public YamlExecVM(Plugin plugin,File fconfig,final HashMap<String,String> defaultvars)
+	public YamlExecVM(Plugin plugin,final HashMap<String,String> defaultvars)
 	{
 		this.plugin=plugin;
-		this.iconfig = new YamlConfiguration();
+		this.iconfig = plugin.getConfig();
 		this.vars = new HashMap<String, String>(defaultvars);
 		this.defaultvars = new HashMap<String, String>(defaultvars);
-		try {
-			iconfig.load(fconfig);
-		} catch (FileNotFoundException e) {
-			try {
-				plugin.getServer().getLogger().warning("[WeatherNews] Config not found. Create default config.");
-				iconfig.load(this.getClass().getResourceAsStream("config.yml"));
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			} catch (InvalidConfigurationException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
-			}
-			try {
-				iconfig.save(fconfig);
-				plugin.getServer().getLogger().info("[WeatherNews] Default config created.");
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public YamlConfiguration getYamlConfig()
-	{
-		return iconfig;
 	}
 	
 	public void parseConfig()

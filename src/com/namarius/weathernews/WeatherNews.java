@@ -1,6 +1,5 @@
 package com.namarius.weathernews;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -33,6 +32,8 @@ public class WeatherNews extends JavaPlugin {
 	public void onEnable() {
 		Logger log=this.getServer().getLogger();
 		log.info("[WeatherNews] Version: "+this.getDescription().getVersion());
+		this.getConfig().options().copyDefaults(true);
+		this.saveConfig();
 		if(this.vm==null)
 		{
 			HashMap<String,String> vars = new HashMap<String, String>();
@@ -40,14 +41,14 @@ public class WeatherNews extends JavaPlugin {
 			{
 				vars.put(c.name(), c.toString());
 			}
-			this.vm=new YamlExecVM(this, new File(this.getDataFolder(),"config.yml"), vars);
+			this.vm=new YamlExecVM(this, vars);
 		}
 		if(wl==null)
 			this.wl = new WeatherListener(this,vm);
 		if(pl==null)
 			this.pl = new PlayerListener(this,vm);
 		PluginManager pm = getServer().getPluginManager();
-		if(this.vm.getYamlConfig().getBoolean("showonlogin"))
+		if(this.getConfig().getBoolean("showonlogin"))
 			pm.registerEvent(Type.PLAYER_JOIN, pl, Priority.Monitor, this);
 		pm.registerEvent(Type.WEATHER_CHANGE, wl, Priority.Monitor, this);
 		pm.registerEvent(Type.THUNDER_CHANGE, wl, Priority.Monitor, this);
