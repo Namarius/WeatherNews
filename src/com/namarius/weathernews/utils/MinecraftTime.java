@@ -52,7 +52,7 @@ public class MinecraftTime {
 		sminute=new Long(this.minute).toString()+" "+vm.getParsedString(this.minute>1?"MINUTE_PLURAL":"MINUTE");
 		shour=new Long(this.hour).toString()+" "+vm.getParsedString(this.hour>1?"HOUR_PLURAL":"HOUR");
 		sday=new Long(this.day).toString()+" "+vm.getParsedString(this.day>1?"DAY_PLURAL":"DAY");
-		sand=vm.getParsedString("and");
+		sand=vm.getParsedString("AND");
 		switch((this.minute>0?1:0)+(this.hour>0?2:0)+(this.day>0?4:0))
 		{
 		case 1:

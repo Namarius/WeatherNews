@@ -47,7 +47,8 @@ public class WeatherNews extends JavaPlugin {
 		if(pl==null)
 			this.pl = new PlayerListener(this,vm);
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Type.PLAYER_JOIN, pl, Priority.Monitor, this);
+		if(this.vm.getYamlConfig().getBoolean("showonlogin"))
+			pm.registerEvent(Type.PLAYER_JOIN, pl, Priority.Monitor, this);
 		pm.registerEvent(Type.WEATHER_CHANGE, wl, Priority.Monitor, this);
 		pm.registerEvent(Type.THUNDER_CHANGE, wl, Priority.Monitor, this);
 		log.info("[WeatherNews] Fully loaded and ready to run.");

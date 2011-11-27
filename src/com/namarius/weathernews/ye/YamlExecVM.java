@@ -57,6 +57,11 @@ public class YamlExecVM {
 		}
 	}
 	
+	public YamlConfiguration getYamlConfig()
+	{
+		return iconfig;
+	}
+	
 	public void parseConfig()
 	{
 		ConfigurationSection cs=this.iconfig.getConfigurationSection("variables");

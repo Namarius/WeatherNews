@@ -13,6 +13,7 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	{
 		this.plugin=plugin;
 		this.vm=vm;
+		
 	}
 	
 	@Override

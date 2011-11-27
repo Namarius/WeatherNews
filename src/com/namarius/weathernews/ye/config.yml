@@ -1,3 +1,4 @@
+showonlogin: true
 variables:
   DAY: "day"
   DAY_PLURAL: "days"

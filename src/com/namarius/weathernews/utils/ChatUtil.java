@@ -7,10 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-/*
-import com.namarius.complexredstone.ComplexRedstone;
-import com.namarius.complexredstone.message.AbstractMessage;
-*/
+
 public final class ChatUtil {
 	private static final ChatColor errorcolor = ChatColor.RED;
 	private static final ChatColor note = ChatColor.GREEN;
@@ -59,11 +56,9 @@ public final class ChatUtil {
     }
 
 	public static void rawsendout(CommandSender sender, String message) {
-		//String[] out=TextWrapper.wrapText(message);
 		String[] out = message.split("\n");
 		for(String s : out)
 		{
-			System.out.println(s);
 			sender.sendMessage(s);
 		}
 	}
