@@ -60,7 +60,7 @@ public class WeatherNews extends JavaPlugin {
 			String label, String[] args) {
 		Player player = (Player) sender;
 		World w = player.getWorld();
-		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new NewsRunner(w, player,this.vm), 1);
+		this.getServer().getScheduler().scheduleSyncDelayedTask(this, new NewsRunner(w, player, false,this.vm,this.getConfig()), 1);
 		return true;
 	}
 

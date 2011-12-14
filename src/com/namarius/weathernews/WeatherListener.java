@@ -1,7 +1,6 @@
 package com.namarius.weathernews;
 
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
@@ -21,14 +20,12 @@ public class WeatherListener extends org.bukkit.event.weather.WeatherListener {
 	@Override
 	public void onThunderChange(ThunderChangeEvent event) {
 		World w = event.getWorld();
-		if(w.getEnvironment()==Environment.NORMAL)
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(w,this.vm), 1);
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(w,this.vm,plugin.getConfig()), 1);
 	}
 	
 	@Override
 	public void onWeatherChange(WeatherChangeEvent event) {
 		World w = event.getWorld();
-		if(w.getEnvironment()==Environment.NORMAL)
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(w,this.vm), 1);
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(w,this.vm,plugin.getConfig()), 1);
 	}
 }

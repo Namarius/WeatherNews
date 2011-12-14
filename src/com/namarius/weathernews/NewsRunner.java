@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import com.namarius.weathernews.utils.ChatUtil;
@@ -15,25 +17,54 @@ public class NewsRunner implements Runnable {
 	private final World world;
 	private List<Player> players = null;
 	private YamlExecVM vm;
+	private FileConfiguration iconfig;
+	private boolean joined;
 	
-	public NewsRunner( World world , YamlExecVM vm)
+	public NewsRunner( World world , YamlExecVM vm, FileConfiguration config)
 	{
 		this.world = world;
 		this.vm = vm;
+		this.iconfig = config;
+		this.joined = false;
 	}
 	
-	public NewsRunner(World world, Player player, YamlExecVM vm)
+	public NewsRunner(World world, Player player,boolean joined, YamlExecVM vm, FileConfiguration config)
 	{
 		this.vm = vm;
 		this.world=world;
+		this.iconfig = config;
+		this.joined = joined;
 		players = new ArrayList<Player>();
 		players.add(player);		
 	}
 
 	@Override
 	public void run() {
-		players = players!=null?players:world.getPlayers();
 		this.vm.parseConfig();
+		System.out.println("prelist");
+		if(this.iconfig.getBoolean("worldwhitelist")^this.iconfig.getList("worlds").contains(world.getName()))
+		{
+			if(this.players!=null && !this.joined)
+			{
+				this.vm.execute();
+				for(Player p:players)
+					ChatUtil.send(this.vm.getParsedString("BLACKLISTED"), p);
+			}
+			return;
+		}
+		System.out.println("postlist");
+		if(this.world.getEnvironment()!=Environment.NORMAL)
+		{
+			System.out.println("not normal");
+			if(this.players!=null && !this.joined)
+			{
+				System.out.println("execute");
+				this.vm.execute();
+				for(Player p:players)
+					ChatUtil.send(this.vm.getParsedString("UNAVAILABLE"), p);
+			}
+			return;
+		}
 		boolean storm = world.hasStorm();
 		boolean thunder = world.isThundering();
 		int weatherduration = world.getWeatherDuration();
@@ -94,7 +125,8 @@ public class NewsRunner implements Runnable {
 		if(now.equals(next))
 			data = this.vm.getParsedString("UNCLEAR");
 		else
-			data = this.vm.getParsedString("CLEAR");	
+			data = this.vm.getParsedString("CLEAR");
+		players = players!=null?players:world.getPlayers();
 		for(Player p : players)
 			ChatUtil.send(data, p);
 	}

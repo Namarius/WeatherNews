@@ -1,3 +1,7 @@
+worldwhitelist: false
+worlds:
+- world_sample
+- world_other
 showonlogin: true
 variables:
   DAY: "day"
@@ -10,10 +14,12 @@ variables:
   SUN: "sun"
   RAIN: "rain"
   THUNDERSTORM: "thunderstorm"
-  CLEAR: "${header}${mainclear}${nextclear}"
-  UNCLEAR: "${header}${mainunclear}${nextunclear}"
-  header: | 
-    ${GOLD}[WeatherNews] Today the day ${TIMEDAY}.
+  CLEAR: "${header}${today}${mainclear}${nextclear}"
+  UNCLEAR: "${header}${today}${mainunclear}${nextunclear}"
+  UNAVAILABLE: "${header}${RED}Weather unavailable."
+  BLACKLISTED: "${header}${RED}Sorry I can't do this."
+  header: "${GOLD}[WeatherNews] "
+  today: "Today the day ${TIMEDAY}."
   nextunclear: |
     After that we have something different.
     I will notice you in ${NEXTNICE}.

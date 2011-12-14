@@ -18,6 +18,6 @@ public class PlayerListener extends org.bukkit.event.player.PlayerListener {
 	
 	@Override
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(event.getPlayer().getWorld(), event.getPlayer(),this.vm), 1);
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(event.getPlayer().getWorld(), event.getPlayer(), true, this.vm,plugin.getConfig()), 1);
 	}
 }

@@ -32,7 +32,7 @@ public final class ChatUtil {
     private static final char COLOR_CHAR = '\u00A7';
     private static final int CHAT_WINDOW_WIDTH = 320;
     private static final int CHAT_STRING_LENGTH = 117;
-    private static final String allowedChars = net.minecraft.server.FontAllowedCharacters.allowedCharacters;
+    private static final String allowedChars = net.minecraft.server.SharedConstants.allowedCharacters;
     
     private static final class Border
     {
@@ -87,7 +87,7 @@ public final class ChatUtil {
 	private static String getLastColor(String input)
 	{
 		String color = "";
-		Pattern p = Pattern.compile("(§[0-9a-fA-F])");
+		Pattern p = Pattern.compile("(\u00A7[0-9a-fA-F])");
 		Matcher m = p.matcher(input);
 		while(m.find())
 		{
