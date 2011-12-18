@@ -41,7 +41,6 @@ public class NewsRunner implements Runnable {
 	@Override
 	public void run() {
 		this.vm.parseConfig();
-		System.out.println("prelist");
 		if(this.iconfig.getBoolean("worldwhitelist")^this.iconfig.getList("worlds").contains(world.getName()))
 		{
 			if(this.players!=null && !this.joined)
@@ -52,13 +51,10 @@ public class NewsRunner implements Runnable {
 			}
 			return;
 		}
-		System.out.println("postlist");
 		if(this.world.getEnvironment()!=Environment.NORMAL)
 		{
-			System.out.println("not normal");
 			if(this.players!=null && !this.joined)
 			{
-				System.out.println("execute");
 				this.vm.execute();
 				for(Player p:players)
 					ChatUtil.send(this.vm.getParsedString("UNAVAILABLE"), p);
