@@ -1,6 +1,6 @@
 name: WeatherNews
 main: com.namarius.weathernews.WeatherNews
-version: 1.2.0
+version: 1.2.1
 author: Namarius
 database: false
 commands:
