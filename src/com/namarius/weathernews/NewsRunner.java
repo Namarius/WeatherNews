@@ -37,7 +37,55 @@ public class NewsRunner implements Runnable {
 		players = new ArrayList<Player>();
 		players.add(player);		
 	}
-
+	
+	private String getNow()
+	{
+		boolean storm = world.hasStorm();
+		boolean thunder = world.isThundering();
+		int weatherduration = world.getWeatherDuration();
+		int thunderduration = world.getThunderDuration();
+		int state = (storm?1:0) + (thunder?2:0) + (weatherduration<=thunderduration?4:0);
+		switch(state)
+		{
+		default:
+		case 0:		//from sun > to rain
+		case 2:		//from sun > to thunder
+		case 4:		//from sun > to sun
+		case 6:		//from sun > to sun
+			return "SUN";
+		case 3:		//from thunder > to sun
+		case 7:		//from thunder > to rain
+			return "THUNDERSTORM";
+		case 1:		//from rain > to sun
+		case 5:		//from rain > to thunder
+			return "RAIN";
+		}
+	}
+	
+	private String getNext()
+	{
+		boolean storm = world.hasStorm();
+		boolean thunder = world.isThundering();
+		int weatherduration = world.getWeatherDuration();
+		int thunderduration = world.getThunderDuration();
+		int state = (storm?1:0) + (thunder?2:0) + (weatherduration<=thunderduration?4:0);
+		switch(state)
+		{
+		default:
+		case 1:		//from rain > to sun
+		case 3:		//from thunder > to sun
+		case 4:		//from sun > to sun
+		case 6:		//from sun > to sun
+			return "SUN";
+		case 0:		//from sun > to rain
+		case 7:		//from thunder > to rain
+			return "RAIN";
+		case 2:		//from sun > to thunder
+		case 5:		//from rain > to thunder
+			return "THUNDERSTORM";
+		}
+	}
+	
 	@Override
 	public void run() {
 		this.vm.parseConfig();
@@ -61,51 +109,23 @@ public class NewsRunner implements Runnable {
 			}
 			return;
 		}
-		boolean storm = world.hasStorm();
-		boolean thunder = world.isThundering();
 		int weatherduration = world.getWeatherDuration();
 		int thunderduration = world.getThunderDuration();
-		int state = (storm?1:0) + (thunder?2:0) + (weatherduration<=thunderduration?4:0);
-		String now = null;
-		String next = null;
-		switch(state)
-		{
-		case 0:		//from sun > to rain
-		case 2:		//from sun > to thunder
-		case 4:		//from sun > to sun
-		case 6:		//from sun > to sun
-			now = "SUN";
-			break;
-		case 3:		//from thunder > to sun
-		case 7:		//from thunder > to rain
-			now = "THUNDERSTORM";
-			break;
-		case 1:		//from rain > to sun
-		case 5:		//from rain > to thunder
-			now = "RAIN";
-			break;
-		}
-		switch(state)
-		{
-		case 1:		//from rain > to sun
-		case 3:		//from thunder > to sun
-		case 4:		//from sun > to sun
-		case 6:		//from sun > to sun
-			next = "SUN";
-			break;
-		case 0:		//from sun > to rain
-		case 7:		//from thunder > to rain
-			next = "RAIN";
-			break;
-		case 2:		//from sun > to thunder
-		case 5:		//from rain > to thunder
-			next = "THUNDERSTORM";
-			break;
-		}
+		
+		String now = getNow();
+		String next = getNext();
+		
 		MinecraftTime time = new MinecraftTime(world.getFullTime()+6000);//I want midnight
 		MinecraftTime wdur = new MinecraftTime(weatherduration);
 		MinecraftTime tdur = new MinecraftTime(thunderduration);
 		MinecraftTime mnext = weatherduration<thunderduration?wdur:tdur;
+		try {
+			wdur.setStapping(this.iconfig);
+			tdur.setStapping(this.iconfig);
+			mnext.setStapping(this.iconfig);
+		} catch (Exception e) {
+			this.vm.logWarning(e.getMessage());
+		}
 		this.vm.setVariable("TIMEDAY",time.getDay());
 		this.vm.setVariable("TIMEHOUR", time.getHour());
 		this.vm.setVariable("TIMEMINUTE", time.getMinute());

@@ -26,6 +26,11 @@ public class YamlExecVM {
 		this.defaultvars = new HashMap<String, String>(defaultvars);
 	}
 	
+	public void logWarning(String s)
+	{
+		this.plugin.getServer().getLogger().warning(s);
+	}
+	
 	public void parseConfig()
 	{
 		ConfigurationSection cs=this.iconfig.getConfigurationSection("variables");

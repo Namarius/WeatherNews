@@ -1,5 +1,12 @@
 package com.namarius.weathernews.utils;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+
+import org.bukkit.configuration.MemoryConfiguration;
+
 import com.namarius.weathernews.ye.YamlExecVM;
 
 public class MinecraftTime {
@@ -44,6 +51,57 @@ public class MinecraftTime {
 	public String getMinute()
 	{
 		return new Long(minute).toString();
+	}
+	
+	public void setStapping(MemoryConfiguration config) throws Exception
+	{
+		if(!config.contains("stepping"))
+			return;
+		int sday=1,shour=1,sminute=1;
+		int found=0;
+		final int time=(int) (this.minute+this.hour*60+this.day*24*60);
+		try
+		{
+			@SuppressWarnings("unchecked")
+			List<Map<Integer,Map<String,Integer>>> list = (List<Map<Integer, Map<String, Integer>>>) config.getList("stepping");
+			for(Map<Integer,Map<String,Integer>> step : list )
+			{
+				Entry<Integer,Map<String,Integer>> entry = step.entrySet().iterator().next();
+				if(found<entry.getKey() && time>entry.getKey())
+				{
+					sday=entry.getValue().get("day")==null?1:entry.getValue().get("day");
+					shour=entry.getValue().get("hour")==null?1:entry.getValue().get("hour");
+					sminute=entry.getValue().get("minute")==null?1:entry.getValue().get("minute");
+					found=entry.getKey();
+				}
+			}
+		}
+		catch (ClassCastException e)
+		{
+			throw new Exception("Unable to parse stepping");
+		}
+		catch (NoSuchElementException e)
+		{
+			throw new Exception("Unable to parse stepping");
+		}
+		System.out.println("sday:"+sday+"shour"+shour+"sminute"+sminute);
+		if(sday>0)
+			this.day=(this.day/sday)*sday;
+		else
+			this.day=0;
+		if(shour>0)
+			this.hour=(this.hour/shour)*shour;
+		else
+			this.hour=0;
+		if(sminute>0)
+			this.minute=(this.minute/sminute)*sminute;
+		else
+			this.minute=0;
+	}
+	
+	public void resetStapping()
+	{
+		update();
 	}
 	
 	public String nicePrint(YamlExecVM vm)
