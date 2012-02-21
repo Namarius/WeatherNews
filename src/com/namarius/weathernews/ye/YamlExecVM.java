@@ -8,32 +8,28 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public class YamlExecVM {
 
 	private HashMap<String,String> vars,defaultvars;
-	private FileConfiguration iconfig;
 	private final Plugin plugin;
 	
-	public YamlExecVM(Plugin plugin,final HashMap<String,String> defaultvars)
+	public YamlExecVM(Plugin plugin)
 	{
 		this.plugin=plugin;
-		this.iconfig = plugin.getConfig();
-		this.vars = new HashMap<String, String>(defaultvars);
-		this.defaultvars = new HashMap<String, String>(defaultvars);
-	}
-	
-	public void logWarning(String s)
-	{
-		this.plugin.getServer().getLogger().warning(s);
+		this.vars = new HashMap<String, String>();
+		for(ChatColor c : ChatColor.values())
+			this.vars.put(c.name(), c.toString());
+		this.defaultvars = new HashMap<String, String>(this.vars);
+
 	}
 	
 	public void parseConfig()
 	{
-		ConfigurationSection cs=this.iconfig.getConfigurationSection("variables");
+		ConfigurationSection cs=this.plugin.getConfig().getConfigurationSection("variables");
 		Map<String,Object> values = cs.getValues(false);
 		for(Entry<String, Object> pairs : values.entrySet())
 		{
@@ -66,7 +62,7 @@ public class YamlExecVM {
 	public void execute()
 	{
 		Logger log = plugin.getServer().getLogger();
-		String toexecute=iconfig.getString("execute");
+		String toexecute=this.plugin.getConfig().getString("execute");
 		if(toexecute==null)
 			toexecute="";
 		if(toexecute=="")
@@ -79,7 +75,7 @@ public class YamlExecVM {
 			String[] params = current.split(";");
 			if(params.length!=4)
 			{
-				log.warning("[WeatherNews]Cannot parse line: "+line+" skipping it." );
+				log.warning("Cannot parse line: "+line+" skipping it." );
 				continue;
 			}
 			YamlOperator operator = YamlOperator.getByString(params[0]);
