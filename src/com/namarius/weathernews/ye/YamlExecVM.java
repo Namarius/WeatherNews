@@ -116,4 +116,8 @@ public class YamlExecVM {
 	{		
 		return getRecusiveParsedString(key, 16);
 	}
+
+	public void logWarning(String message) {
+		this.plugin.getLogger().warning(message);		
+	}
 }

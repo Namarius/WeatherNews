@@ -3,20 +3,26 @@ worlds:
 - world_sample
 - world_other
 showonlogin: true
-#stepping:
-#- 1:
-#    minute: 1
-#- 60:
-#    minute: 10
-#- 240:
-#    minute: 30
-#- 360:
-#    minute: 0
-#    hour: 1
-#- 11520:
-#    minute: 0
-#    hour: 0
-#    day: 2
+stepping:
+- 1:
+    minute: 1
+- 60:
+    minute: 10
+- 240:
+    minute: 30
+- 360:
+    minute: 0
+    hour: 1
+- 11520:
+    minute: 0
+    hour: 0
+    day: 2
+unprecise: true
+minimumpercentage: 0.0
+maximumpercentage: 1.0
+exponentialmod: 2.0
+modulator: 31
+maximumtime: 36000
 variables:
   DAY: "day"
   DAY_PLURAL: "days"

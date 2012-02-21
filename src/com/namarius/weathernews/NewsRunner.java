@@ -68,7 +68,20 @@ public class NewsRunner implements Runnable {
 		boolean thunder = world.isThundering();
 		int weatherduration = world.getWeatherDuration();
 		int thunderduration = world.getThunderDuration();
+		int difference = Math.abs(weatherduration-thunderduration);
+		int modulated = (difference%this.iconfig.getInt("modulation",79));
+		int maximumtime = this.iconfig.getInt("maximumtime",36000);
+		double maximum = this.iconfig.getDouble("maximumpercentage",1.0);
+		double minimum = this.iconfig.getDouble("minimumpercentage",0.0);
+		double exponent = this.iconfig.getDouble("exponentialmod",2.0);
+		//(maxpercentage-minpercentage) * exp(-2*pi*(t./maxt).^endrise) + minpercentage;
+		double s = (maximum-minimum) * Math.exp(-2*Math.PI*Math.pow(((double)difference/(double)maximumtime), exponent)) + minimum;
+		
 		int state = (storm?1:0) + (thunder?2:0) + (weatherduration<=thunderduration?4:0);
+		if(this.iconfig.getBoolean("unprecise"))
+		{
+			
+		}
 		switch(state)
 		{
 		default:

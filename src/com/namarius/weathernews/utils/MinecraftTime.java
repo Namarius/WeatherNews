@@ -63,7 +63,7 @@ public class MinecraftTime {
 		try
 		{
 			@SuppressWarnings("unchecked")
-			List<Map<Integer,Map<String,Integer>>> list = (List<Map<Integer, Map<String, Integer>>>) config.getList("stepping");
+			List<Map<Integer,Map<String,Integer>>> list = (List<Map<Integer, Map<String, Integer>>>) config.get("stepping");
 			for(Map<Integer,Map<String,Integer>> step : list )
 			{
 				Entry<Integer,Map<String,Integer>> entry = step.entrySet().iterator().next();
