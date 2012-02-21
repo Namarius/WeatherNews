@@ -20,7 +20,7 @@ public class NewsRunner implements Runnable {
 	private FileConfiguration iconfig;
 	private boolean joined;
 	
-	public NewsRunner( World world , YamlExecVM vm, FileConfiguration config)
+	public NewsRunner(World world, YamlExecVM vm, FileConfiguration config)
 	{
 		this.world = world;
 		this.vm = vm;

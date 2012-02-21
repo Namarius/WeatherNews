@@ -19,7 +19,7 @@ variables:
   UNAVAILABLE: "${header}${RED}Weather unavailable."
   BLACKLISTED: "${header}${RED}Sorry I can't do this."
   header: "${GOLD}[WeatherNews] "
-  today: "Today the day ${TIMEDAY}."
+  today: "Today the day ${TIMEDAY}. "
   nextunclear: |
     After that we have something different.
     I will notice you in ${NEXTNICE}.
