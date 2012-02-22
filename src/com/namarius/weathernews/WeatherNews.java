@@ -29,9 +29,19 @@ public class WeatherNews extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
-		Player player = (Player) sender;
-		World w = player.getWorld();
-		this.wl.runNews(w, player);
+		if(sender instanceof Player)
+		{
+			Player player = (Player) sender;
+			World w = player.getWorld();
+			this.wl.runNews(w, player);
+		}
+		else
+		{
+			for(World w : this.getServer().getWorlds())
+			{
+				this.wl.runNews(w);
+			}
+		}
 		return true;
 	}
 

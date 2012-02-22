@@ -84,7 +84,6 @@ public class MinecraftTime {
 		{
 			throw new Exception("Unable to parse stepping");
 		}
-		System.out.println("sday:"+sday+"shour"+shour+"sminute"+sminute);
 		if(sday>0)
 			this.day=(this.day/sday)*sday;
 		else

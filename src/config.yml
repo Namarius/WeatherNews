@@ -18,11 +18,11 @@ stepping:
     hour: 0
     day: 2
 unprecise: true
-minimumpercentage: 0.0
+minimumpercentage: 0.1
 maximumpercentage: 1.0
 exponentialmod: 2.0
-modulator: 31
-maximumtime: 36000
+modulator: 79
+maximumtime: 180000
 variables:
   DAY: "day"
   DAY_PLURAL: "days"
@@ -39,12 +39,13 @@ variables:
   UNAVAILABLE: "${header}${RED}Weather unavailable."
   BLACKLISTED: "${header}${RED}Sorry I can't do this."
   header: "${GOLD}[WeatherNews] "
-  today: "Today the day ${TIMEDAY}. "
+  today: |
+    Today the day ${TIMEDAY}.
   nextunclear: |
     After that we have something different.
-    I will notice you in ${NEXTNICE}.
-  nextclear: "After that we have ${NEXT}."
+    I will notice you then.
+  nextclear: "After that we have ${NEXT} (${ACCURACY}%)."
   mainclear: |
     We have ${NOW} for the next ${NEXTNICE}.
   mainunclear: |
-    We have at least ${NOW} for the next ${NEXTNICE}.
+    We have at least ${NOW} for the next ${NEXTNICE} (${ACCURACY}%).

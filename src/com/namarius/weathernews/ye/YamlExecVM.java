@@ -29,6 +29,7 @@ public class YamlExecVM {
 	
 	public void parseConfig()
 	{
+		this.plugin.reloadConfig();
 		ConfigurationSection cs=this.plugin.getConfig().getConfigurationSection("variables");
 		Map<String,Object> values = cs.getValues(false);
 		for(Entry<String, Object> pairs : values.entrySet())
