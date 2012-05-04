@@ -22,9 +22,8 @@ public class WeatherNews extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		//this.reloadConfig();
-		//this.getConfig().options().copyDefaults(true);
-		//this.saveConfig();
+		if(!this.getDataFolder().exists())
+			this.getDataFolder().mkdir();
 		File config = new File(this.getDataFolder(), "config.yml");
 		if(!config.exists())
 		{
@@ -32,6 +31,7 @@ public class WeatherNews extends JavaPlugin {
 			InputStream def = WeatherNews.class.getResourceAsStream("/config.yml");
 			try
 			{
+				//config.createNewFile();
 				FileOutputStream sconfig = new FileOutputStream(config);
 				for(int i=0;(i=def.read(buffer))!=-1;)
 					sconfig.write(buffer,0,i);
