@@ -1,5 +1,10 @@
 package com.namarius.weathernews;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+
+
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -17,9 +22,26 @@ public class WeatherNews extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		this.reloadConfig();
-		this.getConfig().options().copyDefaults(true);
-		this.saveConfig();
+		//this.reloadConfig();
+		//this.getConfig().options().copyDefaults(true);
+		//this.saveConfig();
+		File config = new File(this.getDataFolder(), "config.yml");
+		if(!config.exists())
+		{
+			byte[] buffer = new byte[1024];
+			InputStream def = WeatherNews.class.getResourceAsStream("/config.yml");
+			try
+			{
+				FileOutputStream sconfig = new FileOutputStream(config);
+				for(int i=0;(i=def.read(buffer))!=-1;)
+					sconfig.write(buffer,0,i);
+			}
+			catch(Exception e)
+			{
+				this.getServer().getLogger().warning(e.getMessage());
+				return;
+			}
+		}
 		if(wl==null)
 			this.wl = new WeatherListener(this);
 		this.getServer().getPluginManager().registerEvents(this.wl, this);

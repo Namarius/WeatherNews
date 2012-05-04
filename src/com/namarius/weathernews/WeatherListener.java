@@ -49,6 +49,6 @@ public class WeatherListener implements Listener {
 	
 	public void runNews(World world, Player player)
 	{
-		this.plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(world, player, false, this.vm,plugin.getConfig()), 2);
+		plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new NewsRunner(world, player, false, this.vm,plugin.getConfig()), 2);
 	}
 }

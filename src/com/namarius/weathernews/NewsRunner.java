@@ -7,8 +7,8 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.util.ChatPaginator;
 
-import com.namarius.weathernews.utils.ChatUtil;
 import com.namarius.weathernews.utils.MinecraftTime;
 import com.namarius.weathernews.ye.YamlExecVM;
 
@@ -61,16 +61,16 @@ public class NewsRunner implements Runnable {
 		switch(state)
 		{
 		default:
-		case 0:		//from sun > to rain
+		case 0:		//from sun > to sun
 		case 2:		//from sun > to thunder
-		case 4:		//from sun > to sun
+		case 4:		//from sun > to rain
 		case 6:		//from sun > to sun
 			return "SUN";
-		case 3:		//from thunder > to sun
-		case 7:		//from thunder > to rain
+		case 3:		//from thunder > to rain
+		case 7:		//from thunder > to sun
 			return "THUNDERSTORM";
-		case 1:		//from rain > to sun
-		case 5:		//from rain > to thunder
+		case 1:		//from rain > to thunder
+		case 5:		//from rain > to sun
 			return "RAIN";
 		}
 	}
@@ -92,45 +92,48 @@ public class NewsRunner implements Runnable {
 		int modulation = this.iconfig.getInt("modulation");
 		modulation = modulation > 0 ? modulation : 79;
 		int modulated = ((this.difference%modulation)*100)/modulation;
-		int state = (this.storm?1:0) + (this.thunder?2:0) + (this.weatherduration<=this.thunderduration?4:0) + ((this.difference&1)==0?8:0) + (this.iconfig.getBoolean("unprecise")&&(this.accuracy<modulated)?16:0);
+		int state = (this.storm?1:0) + (this.thunder?2:0) + (this.weatherduration<=this.thunderduration?4:0) + ((this.difference&1)==0?8:0) + ((this.iconfig.getBoolean("unprecise")&&(this.accuracy<modulated))?16:0);
 		switch(state)
 		{
 		default:
-		case 0:			//from sun > to rain
-		case 8:			//from sun > to rain
-		case 7:			//from thunder > to rain
-		case 15:		//from thunder > to rain
-		case 20:		//from sun > to sun 0	
-		case 22:		//from sun > to sun 0
-		case 19:		//from thunder > to sun 0
-		case 17:		//from rain > to sun 0
-		case 18:		//from sun > to thunder 0
-		case 21:		//from rain > to thunder 0
-			return "RAIN";
-		case 1:			//from rain > to sun
-		case 9:			//from rain > to sun
-		case 3:			//from thunder > to sun
-		case 11:		//from thunder > to sun
-		case 4:			//from sun > to sun
-		case 12:		//from sun > to sun
+		case 0:			//from sun > to sun
+		case 0+8:		//from sun > to sun
+		case 5:			//from rain > to sun
+		case 5+8:		//from rain > to sun
 		case 6:			//from sun > to sun
-		case 14:		//from sun > to sun
-		case 37:		//from thunder > to sun 1
-		case 26:		//from sun > to thunder 1
-		case 39:		//from rain > to thunder 1
-		case 41:		//from thunder > to rain 1
-		case 23:		//from thunder > to rain 0
-			return "SUN";
+		case 6+8:		//from sun > to sun
+		case 7:			//from thunder > to sun
+		case 7+8:		//from thunder > to sun
+		
+		case 4+16:		//from sun > to rain
+		case 1+16:		//from rain > to thunder
+		case 2+16:		//from sun > to thunder		
+		case 3+16:		//from thunder > to rain
+			return "SUN";		
+		case 1:			//from rain > to thunder
+		case 1+8:		//from rain > to thunder
 		case 2:			//from sun > to thunder
-		case 10:		//from sun > to thunder
-		case 5:			//from rain > to thunder
-		case 13:		//from rain > to thunder
-		case 40:		//from sun > to sun 1
-		case 38:		//from sun > to sun 1
-		case 25:		//from rain > to sun 1
-		case 24:		//from sun > to rain 1
-		case 16:		//from sun > to rain 0
+		case 2+8:		//from sun > to thunder
+			
+		case 4+8+16:	//from sun > to rain
+		case 3+8+16:	//from thunder > to rain
+		case 0+16:		//from sun > to sun
+		case 5+16:		//from rain > to sun
+		case 6+16:		//from sun > to sun
+		case 7+16:		//from thunder > to sun
 			return "THUNDERSTORM";
+		case 4:			//from sun > to rain
+		case 4+8:		//from sun > to rain
+		case 3:			//from thunder > to rain
+		case 3+8:		//from thunder > to rain
+		
+		case 1+8+16:	//from rain > to thunder
+		case 2+8+16:	//from sun > to thunder
+		case 0+8+16:	//from sun > to sun
+		case 5+8+16:	//from rain > to sun
+		case 6+8+16:	//from sun > to sun
+		case 7+8+16:	//from thunder > to sun
+			return "RAIN";
 		}
 	}
 	
@@ -143,7 +146,7 @@ public class NewsRunner implements Runnable {
 			{
 				this.vm.execute();
 				for(Player p:players)
-					ChatUtil.send(this.vm.getParsedString("BLACKLISTED"), p);
+					p.sendMessage(ChatPaginator.wordWrap(this.vm.getParsedString("BLACKLISTED"), ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH));
 			}
 			return;
 		}
@@ -153,7 +156,7 @@ public class NewsRunner implements Runnable {
 			{
 				this.vm.execute();
 				for(Player p:this.players)
-					ChatUtil.send(this.vm.getParsedString("UNAVAILABLE"), p);
+					p.sendMessage(ChatPaginator.wordWrap(this.vm.getParsedString("UNAVAILABLE"), ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH));
 			}
 			return;
 		}
@@ -191,7 +194,7 @@ public class NewsRunner implements Runnable {
 			data = this.vm.getParsedString("CLEAR");
 		this.players = this.players!=null?this.players:world.getPlayers();
 		for(Player p : this.players)
-			ChatUtil.send(data, p);
+			p.sendMessage(ChatPaginator.wordWrap(data, ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH));
 	}
 
 }
